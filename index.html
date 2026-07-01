@@ -35,26 +35,27 @@
         #countdown-label { font-size: 110px; font-weight: bold; color: #f1c40f; margin: 0; line-height: 1; }
         #cycle-label { font-size: 18px; font-weight: bold; color: #f1c40f; min-height: 30px; margin-top: 5px; margin-bottom: 10px; }
 
-        /* 실외 자전거 (속도계 모드) */
-        #outdoor-screen { background-color: #2c3e50; color: white; justify-content: center; padding: 15px; }
+        /* 💡 핵심 수정: 실외 화면 요소를 세밀하게 밀착 및 중앙 정렬 */
+        #outdoor-screen { background-color: #2c3e50; color: white; justify-content: center; padding: 10px 20px; gap: 0px; }
         
-        /* 1. 💡 수정됨: 현재 시간 폰트 대폭 확대 (26px -> 34px) */
-        #current-clock { font-size: 34px; color: #bdc3c7; font-weight: bold; margin-bottom: 5px; letter-spacing: 1px; }
+        /* 현재 시간 크기 유지 및 하단 마진 삭제하여 속도계와 밀착 */
+        #current-clock { font-size: 34px; color: #bdc3c7; font-weight: bold; margin-bottom: -5px; letter-spacing: 1px; }
         
-        #gps-speed { font-size: 120px; font-weight: bold; color: #f1c40f; line-height: 1; margin: 0; }
-        .speed-unit { font-size: 22px; color: #bdc3c7; font-weight: bold; margin-top: 5px; margin-bottom: 15px; }
+        /* 속도계 숫자 자체의 줄바꿈 및 line-height 축소 */
+        #gps-speed { font-size: 125px; font-weight: bold; color: #f1c40f; line-height: 0.95; margin: 0; padding: 0; }
         
-        /* 2. 💡 수정됨: 2x2 격자 폰트 확대 및 줄바꿈 방지(nowrap) 적용 */
-        .outdoor-stats { display: flex; flex-wrap: wrap; width: 100%; max-width: 350px; background: rgba(255,255,255,0.1); padding: 12px 5px; border-radius: 12px; flex-shrink: 0; margin-bottom: 15px; box-sizing: border-box; }
+        /* 💡 수정됨: 통계 표시창 박스 자체를 슬림하게 압축 (margin-bottom 축소) */
+        .outdoor-stats { display: flex; flex-wrap: wrap; width: 100%; max-width: 350px; background: rgba(255,255,255,0.1); padding: 6px 5px; border-radius: 12px; flex-shrink: 0; margin-top: 5px; margin-bottom: 12px; box-sizing: border-box; }
         
-        .o-stat-box { width: 50%; padding: 10px 2px; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
+        /* 통계 박스 내부 패딩 축소하여 촘촘하게 정렬 */
+        .o-stat-box { width: 50%; padding: 6px 2px; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
         .o-stat-box:nth-child(1) { border-bottom: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); }
         .o-stat-box:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.1); }
         .o-stat-box:nth-child(3) { border-right: 1px solid rgba(255,255,255,0.1); }
         
-        .o-stat-title { font-size: 15px; color: #bdc3c7; margin-bottom: 3px; } /* 13px -> 15px */
-        .o-stat-val { font-size: 26px; font-weight: bold; color: white; letter-spacing: -0.5px; } /* 22px -> 26px */
-        .o-stat-unit { font-size: 14px; font-weight: normal; margin-left: 2px; } /* 12px -> 14px */
+        .o-stat-title { font-size: 15px; color: #bdc3c7; margin-bottom: 2px; }
+        .o-stat-val { font-size: 26px; font-weight: bold; color: white; letter-spacing: -0.5px; }
+        .o-stat-unit { font-size: 14px; font-weight: normal; margin-left: 2px; }
 
         /* 기록실 화면 */
         #history-screen { justify-content: flex-start; padding-top: 30px; }
@@ -69,7 +70,7 @@
 </head>
 <body>
 
-    <div id="main-screen" class="screen active-screen">
+    <div id="main-screen" class="screen">
         <div style="font-size: 60px; margin-bottom: 10px;">🚴‍♂️</div>
         <h1>자전거 트래커</h1>
         <div class="main-menu-btns">
@@ -118,7 +119,6 @@
         <div id="current-clock">00:00:00</div>
         
         <div id="gps-speed">0.0</div>
-        <div class="speed-unit">km/h</div>
         
         <div class="outdoor-stats">
             <div class="o-stat-box">
@@ -163,7 +163,7 @@
     </div>
 
     <script>
-        // --- 1. 실시간 현재 시간 업데이트 로직 ---
+        // --- 실시간 현재 시간 업데이트 로직 ---
         setInterval(() => {
             let now = new Date();
             let hh = String(now.getHours()).padStart(2, '0');
