@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>자전거 트래커</title>
     <style>
-        /* 💡 핵심 수정: height를 100dvh로 설정하여 스마트폰 하단 메뉴바 영역까지 정확히 계산합니다. */
         body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; text-align: center; height: 100vh; height: 100dvh; background-color: #f8f9fa; display: flex; flex-direction: column; overflow: hidden; }
         
-        .screen { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; box-sizing: border-box; width: 100%; overflow-y: auto; }
+        .screen { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 15px 20px; box-sizing: border-box; width: 100%; overflow-y: auto; }
         .active-screen { display: flex; }
         
-        h1, h2 { color: #333; margin-bottom: 20px; margin-top: 0; }
-        .btn { border: none; padding: 18px 20px; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; flex-shrink: 0; margin-bottom: 0; touch-action: manipulation; }
+        h1, h2 { color: #333; margin-bottom: 15px; margin-top: 0; }
+        .btn { border: none; padding: 16px 20px; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; flex-shrink: 0; margin-bottom: 0; touch-action: manipulation; }
         .btn-blue { background-color: #007bff; }
         .btn-green { background-color: #2ecc71; }
         .btn-red { background-color: #e74c3c; }
@@ -29,14 +28,14 @@
         .input-group label { font-size: 16px; color: #555; font-weight: bold; }
         .input-group input { width: 100%; padding: 12px; font-size: 18px; text-align: center; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box; }
 
-        /* 실내 타이머 */
+        /* 💡 수정됨: 실내 타이머 화면 여백 대폭 축소 */
         #timer-screen { color: white; }
-        #status-label { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
-        #message-label { font-size: 20px; font-weight: bold; min-height: 60px; line-height: 1.4; margin-bottom: 10px; }
-        #countdown-label { font-size: 120px; font-weight: bold; color: #f1c40f; margin: 10px 0; line-height: 1; }
-        #cycle-label { font-size: 20px; font-weight: bold; color: #f1c40f; min-height: 60px; margin-top: 10px; }
+        #status-label { font-size: 30px; font-weight: bold; margin-bottom: 5px; }
+        #message-label { font-size: 20px; font-weight: bold; min-height: 40px; line-height: 1.3; margin-bottom: 5px; }
+        #countdown-label { font-size: 110px; font-weight: bold; color: #f1c40f; margin: 0; line-height: 1; }
+        #cycle-label { font-size: 18px; font-weight: bold; color: #f1c40f; min-height: 30px; margin-top: 5px; margin-bottom: 10px; }
 
-        /* 💡 핵심 수정: 실외 자전거 화면의 간격을 확 줄이고 중앙으로 밀집시킵니다. */
+        /* 실외 자전거 (속도계 모드) */
         #outdoor-screen { background-color: #2c3e50; color: white; justify-content: center; padding: 15px; }
         #gps-speed { font-size: 130px; font-weight: bold; color: #f1c40f; line-height: 1; margin: 0; }
         .speed-unit { font-size: 22px; color: #bdc3c7; font-weight: bold; margin-top: 5px; margin-bottom: 25px; }
@@ -100,7 +99,7 @@
         </div>
         <div class="control-row" id="indoor-finish-controls" style="display:none;">
             <button class="btn btn-purple" id="indoor-cal-btn" ontouchend="event.preventDefault();" onclick="">📅 캘린더에 등록</button>
-            <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로</button>
+            <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로 돌아가기</button>
         </div>
     </div>
 
@@ -285,6 +284,9 @@
             document.getElementById("indoor-controls").style.display = "flex";
             document.getElementById("indoor-finish-controls").style.display = "none";
             
+            // 💡 수정됨: 시작 시 cycle-label 다시 표시되도록 원상복구
+            document.getElementById("cycle-label").style.display = "block";
+            
             phase = "READY"; currentTime = 5;
             setScreenProps("#34495e", "⏳ GET READY ⏳", "#f1c40f");
             document.getElementById("message-label").innerHTML = "잠시 후 시작됩니다!";
@@ -340,6 +342,9 @@
             setScreenProps("#3498db", "🎉 WORKOUT DONE 🎉", "white");
             document.getElementById("message-label").innerHTML = "수고하셨습니다!";
             document.getElementById("countdown-label").innerText = "🏆";
+            
+            // 💡 수정됨: 운동 종료 시 투명한 빈 공간을 차지하던 라벨을 완전히 숨김 처리
+            document.getElementById("cycle-label").style.display = "none";
             document.getElementById("cycle-label").innerText = "";
             
             document.getElementById("indoor-controls").style.display = "none";
