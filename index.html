@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>올인원 자전거 트래커</title>
+    <title>자전거 트래커</title>
     <style>
         body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; text-align: center; height: 100vh; background-color: #f8f9fa; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* 공통 화면 설정: 한 화면에 꽉 차게 (스크롤 제거) */
         .screen { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; box-sizing: border-box; width: 100%; }
         .active-screen { display: flex; }
         
         h1, h2 { color: #333; margin-bottom: 20px; margin-top: 0; }
-        .btn { border: none; padding: 15px 20px; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; flex-shrink: 0; margin-bottom: 0; }
+        .btn { border: none; padding: 18px 20px; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; flex-shrink: 0; margin-bottom: 10px; touch-action: manipulation; }
         .btn-blue { background-color: #007bff; }
         .btn-green { background-color: #2ecc71; }
         .btn-red { background-color: #e74c3c; }
         .btn-orange { background-color: #f39c12; }
         .btn-gray { background-color: #95a5a6; }
+        .btn-purple { background-color: #9b59b6; }
         .btn-white { background-color: white; color: #333; border: 2px solid #ccc; box-shadow: none; }
         
-        /* 버튼을 위아래로 쌓이게(column) 수정 */
-        .control-row { display: flex; flex-direction: column; width: 100%; max-width: 350px; gap: 12px; margin-top: 15px; flex-shrink: 0; }
-        .main-menu-btns { display: flex; flex-direction: column; width: 100%; max-width: 350px; gap: 15px; }
+        .main-menu-btns { display: flex; flex-direction: column; width: 100%; max-width: 350px; gap: 10px; }
+        .control-row { display: flex; flex-direction: column; width: 100%; max-width: 350px; gap: 10px; margin-top: 15px; flex-shrink: 0; }
 
         /* 실내 자전거 입력 */
         .input-group { width: 100%; max-width: 350px; margin-bottom: 15px; text-align: left; }
@@ -39,8 +38,7 @@
         /* 실외 자전거 (속도계 모드) */
         #outdoor-screen { background-color: #2c3e50; color: white; justify-content: space-between; padding: 30px 20px; }
         .speed-container { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-grow: 1; }
-        /* 폰 크기에 맞춰 스크롤 안 생기게 사이즈 살짝 조정 */
-        #gps-speed { font-size: 120px; font-weight: bold; color: #f1c40f; line-height: 1; margin-bottom: 0; }
+        #gps-speed { font-size: 130px; font-weight: bold; color: #f1c40f; line-height: 1; margin-bottom: 0; }
         .speed-unit { font-size: 24px; color: #bdc3c7; font-weight: bold; margin-bottom: 20px; }
         
         .outdoor-stats { display: flex; width: 100%; max-width: 350px; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 15px 10px; border-radius: 15px; flex-shrink: 0; }
@@ -51,24 +49,24 @@
 
         /* 기록실 화면 */
         #history-screen { justify-content: flex-start; padding-top: 30px; }
-        .search-box { width: 100%; max-width: 350px; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; flex-shrink: 0; }
-        .history-list { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; overflow-y: auto; padding-bottom: 10px; }
-        .history-card { background: white; padding: 15px; border-radius: 10px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid #007bff; }
+        .history-list { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; overflow-y: auto; padding-bottom: 10px; margin-bottom: 10px; }
+        .history-card { background: white; padding: 15px; border-radius: 10px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid #007bff; position: relative; }
         .history-card.outdoor { border-left-color: #2ecc71; }
         .h-date { font-size: 14px; color: #7f8c8d; margin-bottom: 5px; }
         .h-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
-        .h-desc { font-size: 15px; color: #555; }
+        .h-desc { font-size: 15px; color: #555; line-height: 1.4; }
+        .cal-btn { position: absolute; right: 15px; top: 15px; background: #9b59b6; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="main-screen" class="screen active-screen">
         <div style="font-size: 60px; margin-bottom: 10px;">🚴‍♂️</div>
-        <h1>어떤 운동을 할까요?</h1>
+        <h1>자전거 트래커</h1>
         <div class="main-menu-btns">
-            <button class="btn btn-blue" onclick="navTo('input-screen')">🏠 실내 자전거 (인터벌)</button>
-            <button class="btn btn-green" onclick="navTo('outdoor-screen')">🌳 실외 자전거 (속도계)</button>
-            <button class="btn btn-gray" onclick="openHistory()">📊 내 운동 기록 보기</button>
+            <button class="btn btn-blue" ontouchend="navTo('input-screen'); event.preventDefault();" onclick="navTo('input-screen')">🏠 실내 자전거 (인터벌)</button>
+            <button class="btn btn-green" ontouchend="navTo('outdoor-screen'); event.preventDefault();" onclick="navTo('outdoor-screen')">🌳 실외 자전거 (GPS)</button>
+            <button class="btn btn-gray" ontouchend="openHistory(); event.preventDefault();" onclick="openHistory()">📊 내 운동 기록 보기</button>
         </div>
     </div>
 
@@ -87,8 +85,8 @@
             <input type="number" id="rest-sec" value="15">
         </div>
         <div class="control-row">
-            <button class="btn btn-blue" onclick="startIndoorWorkout()">운동 시작 🏃‍♂️</button>
-            <button class="btn btn-white" onclick="navTo('main-screen')">메인으로</button>
+            <button class="btn btn-blue" ontouchend="startIndoorWorkout(); event.preventDefault();" onclick="startIndoorWorkout()">운동 시작 🏃‍♂️</button>
+            <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로</button>
         </div>
     </div>
 
@@ -97,14 +95,16 @@
         <div id="message-label"></div>
         <div id="countdown-label"></div>
         <div id="cycle-label"></div>
-        <div class="control-row">
-            <button id="indoor-stop-btn" class="btn btn-red" onclick="stopIndoorWorkout()">운동 강제 종료</button>
-            <button id="back-btn" class="btn btn-white" style="display:none;" onclick="navTo('main-screen')">메인으로 돌아가기</button>
+        <div class="control-row" id="indoor-controls">
+            <button class="btn btn-red" ontouchend="stopIndoorWorkout(); event.preventDefault();" onclick="stopIndoorWorkout()">운동 강제 종료</button>
+        </div>
+        <div class="control-row" id="indoor-finish-controls" style="display:none;">
+            <button class="btn btn-purple" id="indoor-cal-btn" ontouchend="event.preventDefault();" onclick="">📅 캘린더에 등록</button>
+            <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로</button>
         </div>
     </div>
 
     <div id="outdoor-screen" class="screen">
-        
         <div class="speed-container">
             <div id="gps-speed">0.0</div>
             <div class="speed-unit">km/h</div>
@@ -126,27 +126,27 @@
         </div>
         
         <div class="control-row" id="outdoor-controls-start">
-            <button class="btn btn-green" onclick="startOutdoorWorkout()">주행 시작</button>
-            <button class="btn btn-white" onclick="navTo('main-screen');">메인으로</button>
+            <button class="btn btn-green" ontouchend="startOutdoorWorkout(); event.preventDefault();" onclick="startOutdoorWorkout()">주행 시작</button>
+            <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로</button>
         </div>
         
         <div class="control-row" id="outdoor-controls-running" style="display:none;">
-            <button class="btn btn-orange" onclick="pauseOutdoorWorkout()">잠시 멈춤</button>
-            <button class="btn btn-red" onclick="finishOutdoorWorkout()">운동 종료</button>
+            <button class="btn btn-orange" ontouchend="pauseOutdoorWorkout(); event.preventDefault();" onclick="pauseOutdoorWorkout()">잠시 멈춤</button>
+            <button class="btn btn-red" ontouchend="finishOutdoorWorkout(); event.preventDefault();" onclick="finishOutdoorWorkout()">운동 종료</button>
         </div>
         
         <div class="control-row" id="outdoor-controls-paused" style="display:none;">
-            <button class="btn btn-green" onclick="resumeOutdoorWorkout()">재시작</button>
-            <button class="btn btn-red" onclick="finishOutdoorWorkout()">운동 종료</button>
+            <button class="btn btn-green" ontouchend="resumeOutdoorWorkout(); event.preventDefault();" onclick="resumeOutdoorWorkout()">재시작</button>
+            <button class="btn btn-red" ontouchend="finishOutdoorWorkout(); event.preventDefault();" onclick="finishOutdoorWorkout()">운동 종료</button>
         </div>
     </div>
 
     <div id="history-screen" class="screen">
         <h2>📊 내 운동 기록</h2>
-        <input type="text" id="search-input" class="search-box" placeholder="날짜, 실내/실외 등 검색..." oninput="renderHistory()">
         <div id="history-list" class="history-list"></div>
-        <div class="control-row">
-            <button class="btn btn-white" onclick="navTo('main-screen')">메인으로</button>
+        <div class="control-row" style="margin-top:0;">
+            <button class="btn btn-green" ontouchend="downloadExcel(); event.preventDefault();" onclick="downloadExcel()">📥 전체 엑셀 다운로드</button>
+            <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로</button>
         </div>
     </div>
 
@@ -164,24 +164,58 @@
             synth.speak(utterance);
         }
 
+        // --- 캘린더 연동 (ICS 파일 생성) ---
+        function addToCalendar(type, durationSec, dist = 0, avgSpeed = 0) {
+            let now = new Date();
+            // ICS 형식 시간에 맞게 변환 (YYYYMMDDTHHMMSSZ - 로컬 시간 보정)
+            let start = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().replace(/[-:]|\.\d{3}/g, '');
+            let endDate = new Date(now.getTime() + durationSec * 1000);
+            let end = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60000)).toISOString().replace(/[-:]|\.\d{3}/g, '');
+
+            let desc = `운동 종류: ${type}\\n운동 시간: ${Math.floor(durationSec/60)}분 ${durationSec%60}초`;
+            if (type === "실외 자전거") desc += `\\n이동 거리: ${dist} km\\n평균 속도: ${avgSpeed} km/h`;
+
+            let icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Bike Tracker//KO\nBEGIN:VEVENT\n";
+            icsMSG += "DTSTART:" + start + "\n";
+            icsMSG += "DTEND:" + end + "\n";
+            icsMSG += "SUMMARY:🚴‍♂️ 자전거 운동 (" + type + ")\n";
+            icsMSG += "DESCRIPTION:" + desc + "\n";
+            icsMSG += "END:VEVENT\nEND:VCALENDAR";
+
+            let blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "workout.ics";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert("캘린더 파일이 다운로드되었습니다!\n스마트폰 알림창에서 열어서 저장해주세요.");
+        }
+
+        // --- 기록 저장 ---
         function saveRecord(type, totalSec, distance = 0, avgSpeed = 0) {
             if (totalSec < 300) {
                 alert("운동 시간이 5분 미만이므로 기록이 저장되지 않았습니다.");
                 return;
             }
-
             let records = JSON.parse(localStorage.getItem('bike_records')) || [];
             let now = new Date();
             let dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             let timeStr = `${Math.floor(totalSec/60)}분 ${totalSec%60}초`;
 
-            let newRecord = { date: dateStr, type: type, time: timeStr, dist: distance.toFixed(2), speed: avgSpeed.toFixed(1) };
+            let newRecord = { 
+                date: dateStr, type: type, time: timeStr, 
+                dist: distance.toFixed(2), speed: avgSpeed.toFixed(1),
+                rawSec: totalSec 
+            };
             records.push(newRecord);
             localStorage.setItem('bike_records', JSON.stringify(records));
-            alert(`운동 기록이 저장되었습니다!\n(${timeStr} 주행)`);
         }
 
-        // --- 실내 자전거 ---
+        // ==========================================
+        // 1. 실내 자전거 타이머
+        // ==========================================
         let indoorTimerInterval;
         let cyclesLeft, phase, currentTime, sprintSec, restSec, totalCycles, indoorTotalElapsedSec = 0;
 
@@ -202,19 +236,18 @@
             cyclesLeft = totalCycles;
             indoorTotalElapsedSec = 0;
 
-            if (cyclesLeft <= 0) return alert("운동 시간이 1사이클보다 짧습니다.");
+            if (cyclesLeft <= 0) return alert("운동 시간이 짧습니다.");
 
-            speak(""); 
+            speak("운동을 시작합니다."); 
             navTo('timer-screen');
-            document.getElementById("indoor-stop-btn").style.display = "block";
-            document.getElementById("back-btn").style.display = "none";
+            document.getElementById("indoor-controls").style.display = "flex";
+            document.getElementById("indoor-finish-controls").style.display = "none";
             
             phase = "READY"; currentTime = 5;
             setScreenProps("#34495e", "⏳ GET READY ⏳", "#f1c40f");
-            document.getElementById("message-label").innerHTML = "자전거 안장에 앉아 준비하세요!";
+            document.getElementById("message-label").innerHTML = "잠시 후 시작됩니다!";
             document.getElementById("cycle-label").innerText = `총 ${totalCycles}회 목표!`;
             document.getElementById("countdown-label").innerText = currentTime;
-            speak("운동을 시작합니다. 준비하세요.");
             
             indoorTimerInterval = setInterval(updateIndoorTimer, 1000);
         }
@@ -222,7 +255,6 @@
         function updateIndoorTimer() {
             currentTime--;
             if (phase !== "READY") indoorTotalElapsedSec++;
-            
             document.getElementById("countdown-label").innerText = currentTime;
 
             if (phase === "READY" && currentTime === 3) speak("3, 2, 1, 시작!");
@@ -254,34 +286,40 @@
 
         function stopIndoorWorkout() {
             clearInterval(indoorTimerInterval);
-            saveRecord("실내", indoorTotalElapsedSec);
+            saveRecord("실내 자전거", indoorTotalElapsedSec);
             navTo('main-screen');
         }
 
         function finishIndoorWorkout() {
             clearInterval(indoorTimerInterval);
             setScreenProps("#3498db", "🎉 WORKOUT DONE 🎉", "white");
-            document.getElementById("message-label").innerHTML = "정말 대단합니다! 수고하셨습니다.";
+            document.getElementById("message-label").innerHTML = "수고하셨습니다!";
             document.getElementById("countdown-label").innerText = "🏆";
             document.getElementById("cycle-label").innerText = "";
-            document.getElementById("indoor-stop-btn").style.display = "none";
-            document.getElementById("back-btn").style.display = "block";
+            
+            document.getElementById("indoor-controls").style.display = "none";
+            document.getElementById("indoor-finish-controls").style.display = "flex";
+            
+            // 캘린더 등록 버튼에 데이터 바인딩
+            document.getElementById("indoor-cal-btn").onclick = function() { addToCalendar("실내 자전거", indoorTotalElapsedSec); };
+            document.getElementById("indoor-cal-btn").ontouchend = function(e) { e.preventDefault(); addToCalendar("실내 자전거", indoorTotalElapsedSec); };
             
             speak("운동 완료! 고생하셨습니다.");
-            saveRecord("실내", indoorTotalElapsedSec);
+            saveRecord("실내 자전거", indoorTotalElapsedSec);
         }
 
-        // --- 실외 자전거 (속도계) ---
+        // ==========================================
+        // 2. 실외 자전거 (GPS)
+        // ==========================================
         let watchId = null, outdoorTimerInterval = null, outdoorSeconds = 0, totalDistance = 0, outdoorStatus = "STOPPED";
         let lastLat = null, lastLon = null;
 
         function startOutdoorWorkout() {
             if (!navigator.geolocation) return alert("GPS 기능을 지원하지 않습니다.");
             
-            speak("GPS 주행 모드를 켰습니다. (보안 정책상 작동하지 않을 수 있습니다)");
+            speak("GPS 주행을 시작합니다.");
             outdoorStatus = "RUNNING";
-            outdoorSeconds = 0; totalDistance = 0; 
-            lastLat = null; lastLon = null;
+            outdoorSeconds = 0; totalDistance = 0; lastLat = null; lastLon = null;
             
             document.getElementById("outdoor-controls-start").style.display = "none";
             document.getElementById("outdoor-controls-running").style.display = "flex";
@@ -293,11 +331,7 @@
             document.getElementById("gps-avg-speed").innerText = "0.0";
             
             outdoorTimerInterval = setInterval(updateOutdoorTime, 1000);
-
-            watchId = navigator.geolocation.watchPosition(updatePosition, 
-                err => { console.log(err); }, 
-                { enableHighAccuracy: true, maximumAge: 0 }
-            );
+            watchId = navigator.geolocation.watchPosition(updatePosition, err => console.log(err), { enableHighAccuracy: true, maximumAge: 0 });
         }
 
         function updateOutdoorTime() {
@@ -313,14 +347,10 @@
         }
 
         function updatePosition(position) {
+            if (outdoorStatus !== "RUNNING") return;
             let lat = position.coords.latitude;
             let lon = position.coords.longitude;
             let speedMps = position.coords.speed;
-
-            if (outdoorStatus !== "RUNNING") {
-                document.getElementById("gps-speed").innerText = "0.0";
-                return;
-            }
 
             let speedKmh = (speedMps !== null && speedMps > 0) ? speedMps * 3.6 : 0;
             document.getElementById("gps-speed").innerText = speedKmh.toFixed(1);
@@ -329,7 +359,6 @@
                 totalDistance += getDistance(lastLat, lastLon, lat, lon);
                 document.getElementById("gps-distance").innerText = totalDistance.toFixed(2);
             }
-            
             lastLat = lat; lastLon = lon;
         }
 
@@ -342,8 +371,7 @@
         }
 
         function resumeOutdoorWorkout() {
-            outdoorStatus = "RUNNING";
-            lastLat = null; lastLon = null; 
+            outdoorStatus = "RUNNING"; lastLat = null; lastLon = null; 
             document.getElementById("outdoor-controls-paused").style.display = "none";
             document.getElementById("outdoor-controls-running").style.display = "flex";
             speak("주행을 다시 시작합니다.");
@@ -357,13 +385,19 @@
             document.getElementById("outdoor-controls-running").style.display = "none";
             document.getElementById("outdoor-controls-paused").style.display = "none";
             document.getElementById("outdoor-controls-start").style.display = "flex";
-            
             document.getElementById("gps-speed").innerText = "0.0";
+            
             speak("주행을 완료했습니다.");
             
             let avgSpeed = totalDistance > 0 ? (totalDistance / (outdoorSeconds / 3600)) : 0;
-            saveRecord("실외", outdoorSeconds, totalDistance, avgSpeed);
+            saveRecord("실외 자전거", outdoorSeconds, totalDistance, avgSpeed);
             
+            // 실외 자전거 캘린더 등록 확인
+            if(outdoorSeconds >= 300) {
+                if(confirm("이 운동 기록을 스마트폰 캘린더에 저장하시겠습니까?")) {
+                    addToCalendar("실외 자전거", outdoorSeconds, totalDistance.toFixed(2), avgSpeed.toFixed(1));
+                }
+            }
             navTo('main-screen');
         }
 
@@ -375,42 +409,55 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        // --- 기록 보기 ---
+        // ==========================================
+        // 3. 기록 보기 및 다운로드
+        // ==========================================
         function openHistory() {
-            document.getElementById("search-input").value = "";
             renderHistory();
             navTo('history-screen');
         }
 
         function renderHistory() {
             let records = JSON.parse(localStorage.getItem('bike_records')) || [];
-            let searchTerm = document.getElementById("search-input").value.toLowerCase();
             let listContainer = document.getElementById("history-list");
-            
             listContainer.innerHTML = "";
-            let filteredRecords = records.reverse().filter(r => {
-                return r.date.includes(searchTerm) || r.type.includes(searchTerm);
-            });
-
-            if (filteredRecords.length === 0) {
-                listContainer.innerHTML = "<p style='color:#777; margin-top:20px;'>저장된 기록이 없거나 검색 결과가 없습니다.<br>(5분 이상 운동 시 자동 저장됩니다.)</p>";
+            
+            if (records.length === 0) {
+                listContainer.innerHTML = "<p style='color:#777; margin-top:50px;'>저장된 기록이 없습니다.<br>(5분 이상 운동 시 자동 저장)</p>";
                 return;
             }
 
-            filteredRecords.forEach(r => {
-                let isOutdoor = (r.type === "실외");
+            records.reverse().forEach((r, idx) => {
+                let isOut = r.type === "실외 자전거";
                 let cardHtml = `
-                    <div class="history-card ${isOutdoor ? 'outdoor' : ''}">
+                    <div class="history-card ${isOut ? 'outdoor' : ''}">
                         <div class="h-date">📅 ${r.date}</div>
-                        <div class="h-title">${isOutdoor ? '🌳 실외 자전거' : '🏠 실내 자전거 (인터벌)'}</div>
+                        <div class="h-title">${r.type}</div>
                         <div class="h-desc">
-                            ⏱️ 시간: ${r.time}
-                            ${isOutdoor ? `<br>📏 거리: ${r.dist} km<br>⚡ 평균 속도: ${r.speed} km/h` : ''}
+                            ⏱️ 운동 시간: ${r.time}
+                            ${isOut ? `<br>📏 거리: ${r.dist} km<br>⚡ 평균 속도: ${r.speed} km/h` : ''}
                         </div>
+                        <button class="cal-btn" onclick="addToCalendar('${r.type}', ${r.rawSec}, ${r.dist || 0}, ${r.speed || 0})">📅</button>
                     </div>
                 `;
                 listContainer.innerHTML += cardHtml;
             });
+        }
+
+        function downloadExcel() {
+            let records = JSON.parse(localStorage.getItem('bike_records')) || [];
+            if (records.length === 0) return alert("다운로드할 기록이 없습니다.");
+
+            let csvContent = "\uFEFF운동 날짜,운동 종류,운동 시간,이동 거리(km),평균 속도(km/h)\n";
+            records.forEach(r => { csvContent += `${r.date},${r.type},${r.time},${r.dist || '-'},${r.speed || '-'}\n`; });
+
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `운동기록_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
