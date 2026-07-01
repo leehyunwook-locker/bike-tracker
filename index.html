@@ -28,21 +28,23 @@
         .input-group label { font-size: 16px; color: #555; font-weight: bold; }
         .input-group input { width: 100%; padding: 12px; font-size: 18px; text-align: center; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box; }
 
-        /* 💡 수정됨: 실내 타이머 화면 여백 대폭 축소 */
+        /* 실내 타이머 */
         #timer-screen { color: white; }
-        #status-label { font-size: 30px; font-weight: bold; margin-bottom: 5px; }
+        #status-label { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
         #message-label { font-size: 20px; font-weight: bold; min-height: 40px; line-height: 1.3; margin-bottom: 5px; }
-        #countdown-label { font-size: 110px; font-weight: bold; color: #f1c40f; margin: 0; line-height: 1; }
+        #countdown-label { font-size: 120px; font-weight: bold; color: #f1c40f; margin: 10px 0; line-height: 1; }
         #cycle-label { font-size: 18px; font-weight: bold; color: #f1c40f; min-height: 30px; margin-top: 5px; margin-bottom: 10px; }
 
         /* 실외 자전거 (속도계 모드) */
         #outdoor-screen { background-color: #2c3e50; color: white; justify-content: center; padding: 15px; }
+        #current-clock { font-size: 22px; color: #bdc3c7; font-weight: bold; margin-bottom: 5px; letter-spacing: 1px; }
         #gps-speed { font-size: 130px; font-weight: bold; color: #f1c40f; line-height: 1; margin: 0; }
-        .speed-unit { font-size: 22px; color: #bdc3c7; font-weight: bold; margin-top: 5px; margin-bottom: 25px; }
+        .speed-unit { font-size: 22px; color: #bdc3c7; font-weight: bold; margin-top: 5px; margin-bottom: 20px; }
         
-        .outdoor-stats { display: flex; width: 100%; max-width: 350px; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 15px 10px; border-radius: 12px; flex-shrink: 0; margin-bottom: 25px; box-sizing: border-box; }
-        .o-stat-box { width: 33%; }
-        .o-stat-title { font-size: 13px; color: #bdc3c7; margin-bottom: 5px; }
+        /* 2x2 격자 구조로 변경하여 칼로리 추가 */
+        .outdoor-stats { display: flex; flex-wrap: wrap; width: 100%; max-width: 350px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; flex-shrink: 0; margin-bottom: 25px; box-sizing: border-box; }
+        .o-stat-box { width: 50%; padding: 8px 5px; box-sizing: border-box; }
+        .o-stat-title { font-size: 13px; color: #bdc3c7; margin-bottom: 3px; }
         .o-stat-val { font-size: 22px; font-weight: bold; color: white; }
         .o-stat-unit { font-size: 12px; font-weight: normal; }
 
@@ -104,22 +106,29 @@
     </div>
 
     <div id="outdoor-screen" class="screen">
+        <div id="current-clock">00:00:00</div>
         
-        <div id="gps-speed">0.0</div>
-        <div class="speed-unit">km/h</div>
-        
-        <div class="outdoor-stats">
-            <div class="o-stat-box">
-                <div class="o-stat-title">운동 거리</div>
-                <div class="o-stat-val"><span id="gps-distance">0.00</span><span class="o-stat-unit">km</span></div>
-            </div>
-            <div class="o-stat-box" style="border-left: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2);">
-                <div class="o-stat-title">운동 시간</div>
-                <div class="o-stat-val" id="gps-time">00:00</div>
-            </div>
-            <div class="o-stat-box">
-                <div class="o-stat-title">평균 속도</div>
-                <div class="o-stat-val"><span id="gps-avg-speed">0.0</span><span class="o-stat-unit">km/h</span></div>
+        <div class="speed-container">
+            <div id="gps-speed">0.0</div>
+            <div class="speed-unit">km/h</div>
+            
+            <div class="outdoor-stats">
+                <div class="o-stat-box" style="border-bottom: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);">
+                    <div class="o-stat-title">운동 거리</div>
+                    <div class="o-stat-val"><span id="gps-distance">0.00</span><span class="o-stat-unit">km</span></div>
+                </div>
+                <div class="o-stat-box" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div class="o-stat-title">운동 시간</div>
+                    <div class="o-stat-val" id="gps-time">00:00</div>
+                </div>
+                <div class="o-stat-box" style="border-right: 1px solid rgba(255,255,255,0.1);">
+                    <div class="o-stat-title">평균 속도</div>
+                    <div class="o-stat-val"><span id="gps-avg-speed">0.0</span><span class="o-stat-unit">km/h</span></div>
+                </div>
+                <div class="o-stat-box">
+                    <div class="o-stat-title">소비 칼로리</div>
+                    <div class="o-stat-val"><span id="gps-calories">0.0</span><span class="o-stat-unit">kcal</span></div>
+                </div>
             </div>
         </div>
         
@@ -137,7 +146,6 @@
             <button class="btn btn-green" ontouchend="resumeOutdoorWorkout(); event.preventDefault();" onclick="resumeOutdoorWorkout()">재시작</button>
             <button class="btn btn-red" ontouchend="finishOutdoorWorkout(); event.preventDefault();" onclick="finishOutdoorWorkout()">운동 종료</button>
         </div>
-        
     </div>
 
     <div id="history-screen" class="screen">
@@ -150,36 +158,27 @@
     </div>
 
     <script>
+        // --- 상시 시계 작동 로직 (상단 표시용) ---
+        setInterval(() => {
+            let now = new Date();
+            document.getElementById("current-clock").innerText = 
+                `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+        }, 1000);
+
         // --- 화면 꺼짐 방지(Wake Lock API) ---
         let wakeLock = null;
-
         async function requestWakeLock() {
             try {
-                if ('wakeLock' in navigator) {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('화면 꺼짐 방지 활성화 완료');
-                }
-            } catch (err) {
-                console.log('화면 꺼짐 방지 지원 안됨:', err);
-            }
+                if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); }
+            } catch (err) { console.log('화면방지 미지원:', err); }
         }
-
         function releaseWakeLock() {
-            if (wakeLock !== null) {
-                wakeLock.release().then(() => {
-                    wakeLock = null;
-                    console.log('화면 꺼짐 방지 해제 완료');
-                });
-            }
+            if (wakeLock !== null) { wakeLock.release().then(() => wakeLock = null); }
         }
-
         document.addEventListener('visibilitychange', async () => {
-            if (wakeLock !== null && document.visibilityState === 'visible') {
-                requestWakeLock();
-            }
+            if (wakeLock !== null && document.visibilityState === 'visible') { requestWakeLock(); }
         });
 
-        // --- 기본 기능 ---
         function navTo(screenId) {
             if(screenId === 'main-screen') releaseWakeLock();
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
@@ -194,24 +193,35 @@
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ko-KR'; utterance.rate = 1.1;
                 synth.speak(utterance);
-            } catch (e) {
-                console.log("음성 에러 무시", e);
-            }
+            } catch (e) { console.log("음성에러", e); }
         }
 
-        // --- 캘린더 연동 (ICS 파일 생성) ---
-        function addToCalendar(type, durationSec, dist = 0, avgSpeed = 0) {
-            let now = new Date();
-            let start = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().replace(/[-:]|\.\d{3}/g, '');
-            let endDate = new Date(now.getTime() + durationSec * 1000);
-            let end = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60000)).toISOString().replace(/[-:]|\.\d{3}/g, '');
+        // --- 📅 캘린더 연동 (당일 저장 고정 및 시간 역산 로직 완벽 반영) ---
+        function formatICSDate(date) {
+            let y = date.getFullYear();
+            let m = String(date.getMonth() + 1).padStart(2, '0');
+            let d = String(date.getDate()).padStart(2, '0');
+            let hh = String(date.getHours()).padStart(2, '0');
+            let mm = String(date.getMinutes()).padStart(2, '0');
+            let ss = String(date.getSeconds()).padStart(2, '0');
+            return `${y}${m}${d}T${hh}${mm}${ss}`; // 스마트폰 로컬 시간 기준으로 국가 표준시 오차 제거
+        }
 
-            let desc = `운동 종류: ${type}\\n운동 시간: ${Math.floor(durationSec/60)}분 ${durationSec%60}초`;
-            if (type === "실외 자전거") desc += `\\n이동 거리: ${dist} km\\n평균 속도: ${avgSpeed} km/h`;
+        function addToCalendar(type, durationSec, dist = 0, avgSpeed = 0, calories = 0) {
+            let endDate = new Date(); // 종료 버튼을 누른 바로 '지금'이 종료 시간
+            let startDate = new Date(endDate.getTime() - (durationSec * 1000)); // 종료 시간에서 운동한 만큼 과거로 역산
+
+            let startStr = formatICSDate(startDate);
+            let endStr = formatICSDate(endDate);
+
+            let desc = `운동 종류: ${type}\\n운동 시간: ${Math.floor(durationSec/60)}분 ${durationSec%60}초\\n소비 칼로리: ${calories} kcal`;
+            if (type === "실외 자전거") {
+                desc += `\\n이동 거리: ${dist} km\\n평균 속도: ${avgSpeed} km/h`;
+            }
 
             let icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Bike Tracker//KO\nBEGIN:VEVENT\n";
-            icsMSG += "DTSTART:" + start + "\n";
-            icsMSG += "DTEND:" + end + "\n";
+            icsMSG += "DTSTART:" + startStr + "\n";
+            icsMSG += "DTEND:" + endStr + "\n";
             icsMSG += "SUMMARY:🚴‍♂️ 자전거 운동 (" + type + ")\n";
             icsMSG += "DESCRIPTION:" + desc + "\n";
             icsMSG += "END:VEVENT\nEND:VCALENDAR";
@@ -224,13 +234,13 @@
             link.click();
             document.body.removeChild(link);
             
-            alert("캘린더 파일이 다운로드되었습니다!\n스마트폰 알림창에서 파일을 열어 일정을 저장하세요.");
+            alert("캘린더 파일이 다운로드되었습니다!\n터치하여 일정을 저장해 주세요.");
         }
 
         // --- 기록 저장 ---
-        function saveRecord(type, totalSec, distance = 0, avgSpeed = 0) {
+        function saveRecord(type, totalSec, distance = 0, avgSpeed = 0, calories = 0) {
             if (totalSec < 300) {
-                alert("운동 시간이 5분 미만이므로 기록이 저장되지 않았습니다.");
+                alert("운동 시간이 5분 미만이므로 기록이 저장되지 않았습니다. (테스트 방지)");
                 return;
             }
             let records = JSON.parse(localStorage.getItem('bike_records')) || [];
@@ -241,14 +251,14 @@
             let newRecord = { 
                 date: dateStr, type: type, time: timeStr, 
                 dist: distance.toFixed(2), speed: avgSpeed.toFixed(1),
-                rawSec: totalSec 
+                calories: calories.toFixed(1), rawSec: totalSec 
             };
             records.push(newRecord);
             localStorage.setItem('bike_records', JSON.stringify(records));
         }
 
         // ==========================================
-        // 1. 실내 자전거 타이머
+        // 1. 실내 자전거 타이머 (칼로리 대략 계산 추가)
         // ==========================================
         let indoorTimerInterval;
         let cyclesLeft, phase, currentTime, sprintSec, restSec, totalCycles, indoorTotalElapsedSec = 0;
@@ -270,7 +280,6 @@
             let cycleSec = sprintSec + restSec;
 
             if (isNaN(cycleSec) || cycleSec <= 0) { alert("올바른 숫자를 입력해주세요."); return; }
-            
             totalCycles = Math.floor((totalMin * 60) / cycleSec);
             cyclesLeft = totalCycles;
             indoorTotalElapsedSec = 0;
@@ -278,13 +287,10 @@
             if (cyclesLeft <= 0) { alert("운동 시간이 너무 짧습니다."); return; }
 
             requestWakeLock();
-            
             speak("운동을 시작합니다."); 
             navTo('timer-screen');
             document.getElementById("indoor-controls").style.display = "flex";
             document.getElementById("indoor-finish-controls").style.display = "none";
-            
-            // 💡 수정됨: 시작 시 cycle-label 다시 표시되도록 원상복구
             document.getElementById("cycle-label").style.display = "block";
             
             phase = "READY"; currentTime = 5;
@@ -331,7 +337,8 @@
         function stopIndoorWorkout() {
             clearInterval(indoorTimerInterval);
             releaseWakeLock();
-            saveRecord("실내 자전거", indoorTotalElapsedSec);
+            let inCal = (6.5 * 3.5 * 70 / 200) / 60 * indoorTotalElapsedSec; // 평균 실내 칼로리 환산
+            saveRecord("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal);
             navTo('main-screen');
         }
 
@@ -339,38 +346,37 @@
             clearInterval(indoorTimerInterval);
             releaseWakeLock();
             
+            let inCal = (6.5 * 3.5 * 70 / 200) / 60 * indoorTotalElapsedSec;
             setScreenProps("#3498db", "🎉 WORKOUT DONE 🎉", "white");
             document.getElementById("message-label").innerHTML = "수고하셨습니다!";
             document.getElementById("countdown-label").innerText = "🏆";
-            
-            // 💡 수정됨: 운동 종료 시 투명한 빈 공간을 차지하던 라벨을 완전히 숨김 처리
             document.getElementById("cycle-label").style.display = "none";
-            document.getElementById("cycle-label").innerText = "";
             
             document.getElementById("indoor-controls").style.display = "none";
             document.getElementById("indoor-finish-controls").style.display = "flex";
             
-            document.getElementById("indoor-cal-btn").onclick = function() { addToCalendar("실내 자전거", indoorTotalElapsedSec); };
-            document.getElementById("indoor-cal-btn").ontouchend = function(e) { e.preventDefault(); addToCalendar("실내 자전거", indoorTotalElapsedSec); };
+            document.getElementById("indoor-cal-btn").onclick = function() { addToCalendar("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal.toFixed(1)); };
+            document.getElementById("indoor-cal-btn").ontouchend = function(e) { e.preventDefault(); addToCalendar("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal.toFixed(1)); };
             
             speak("운동 완료! 고생하셨습니다.");
-            saveRecord("실내 자전거", indoorTotalElapsedSec);
+            saveRecord("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal);
         }
 
         // ==========================================
-        // 2. 실외 자전거 (GPS)
+        // 2. 실외 자전거 (GPS & 실시간 오토 정지 로직)
         // ==========================================
         let watchId = null, outdoorTimerInterval = null, outdoorSeconds = 0, totalDistance = 0, outdoorStatus = "STOPPED";
         let lastLat = null, lastLon = null;
+        let currentGpsSpeed = 0, totalCalories = 0, zeroSpeedSeconds = 0; // 오토스톱용 추적 변수
 
         function startOutdoorWorkout() {
-            if (!navigator.geolocation) { alert("이 브라우저에서는 GPS 기능을 지원하지 않습니다."); return; }
+            if (!navigator.geolocation) { alert("GPS 기능을 지원하지 않습니다."); return; }
             
             requestWakeLock();
-            
             speak("GPS 주행을 시작합니다.");
             outdoorStatus = "RUNNING";
-            outdoorSeconds = 0; totalDistance = 0; lastLat = null; lastLon = null;
+            outdoorSeconds = 0; totalDistance = 0; totalCalories = 0; zeroSpeedSeconds = 0; currentGpsSpeed = 0;
+            lastLat = null; lastLon = null;
             
             document.getElementById("outdoor-controls-start").style.display = "none";
             document.getElementById("outdoor-controls-running").style.display = "flex";
@@ -380,31 +386,73 @@
             document.getElementById("gps-time").innerText = "00:00";
             document.getElementById("gps-speed").innerText = "0.0";
             document.getElementById("gps-avg-speed").innerText = "0.0";
+            document.getElementById("gps-calories").innerText = "0.0";
             
+            // 타이머는 항상 켜져있으며 오토포즈 상태를 실시간 체크함
             outdoorTimerInterval = setInterval(updateOutdoorTime, 1000);
             watchId = navigator.geolocation.watchPosition(updatePosition, err => console.log(err), { enableHighAccuracy: true, maximumAge: 0 });
         }
 
         function updateOutdoorTime() {
-            if (outdoorStatus !== "RUNNING") return;
-            outdoorSeconds++;
-            let m = String(Math.floor(outdoorSeconds / 60)).padStart(2, '0');
-            let s = String(outdoorSeconds % 60).padStart(2, '0');
-            document.getElementById("gps-time").innerText = `${m}:${s}`;
-            
-            if (totalDistance > 0 && outdoorSeconds > 0) {
-                document.getElementById("gps-avg-speed").innerText = (totalDistance / (outdoorSeconds / 3600)).toFixed(1);
+            // [오토 로직 체크 리스트]
+            if (outdoorStatus === "RUNNING") {
+                // GPS 기기 오차 신호 튐 방지를 위해 2km/h 미만일 때 정지 상태로 간주
+                if (currentGpsSpeed < 2.0) {
+                    zeroSpeedSeconds++;
+                    if (zeroSpeedSeconds >= 5) { // 1. 5초간 정지 시 자동 일시 정지
+                        pauseOutdoorWorkout();
+                        speak("정지 상태가 감지되어 주행을 일시정지합니다.");
+                        return;
+                    }
+                } else {
+                    zeroSpeedSeconds = 0; // 움직이면 초기화
+                }
+
+                outdoorSeconds++;
+                let m = String(Math.floor(outdoorSeconds / 60)).padStart(2, '0');
+                let s = String(outdoorSeconds % 60).padStart(2, '0');
+                document.getElementById("gps-time").innerText = `${m}:${s}`;
+                
+                if (totalDistance > 0 && outdoorSeconds > 0) {
+                    document.getElementById("gps-avg-speed").innerText = (totalDistance / (outdoorSeconds / 3600)).toFixed(1);
+                }
+
+                // 2. 운동 강도(MET)에 맞춘 실시간 칼로리 계산 공식 (몸무게 70kg 기준)
+                let met = 1.0;
+                if (currentGpsSpeed >= 2.0 && currentGpsSpeed < 15) met = 4.0;
+                else if (currentGpsSpeed >= 15 && currentGpsSpeed < 20) met = 6.0;
+                else if (currentGpsSpeed >= 20 && currentGpsSpeed < 25) met = 8.0;
+                else if (currentGpsSpeed >= 25) met = 10.5;
+
+                totalCalories += (met * 3.5 * 70 / 200) / 60;
+                document.getElementById("gps-calories").innerText = totalCalories.toFixed(1);
+
+            } else if (outdoorStatus === "PAUSED") {
+                // 3. 일시정지 상태에서 속도가 5km/h 이상이 되면 자동 재시작
+                if (currentGpsSpeed >= 5.0) {
+                    resumeOutdoorWorkout();
+                    zeroSpeedSeconds = 0;
+                    speak("주행을 다시 시작합니다.");
+                } else {
+                    zeroSpeedSeconds++;
+                    if (zeroSpeedSeconds >= 60) { // 4. 정지 상태가 1분(60초) 지속되면 자동 종료
+                        speak("장시간 정지하여 주행을 자동 종료합니다.");
+                        finishOutdoorWorkout();
+                    }
+                }
             }
         }
 
         function updatePosition(position) {
-            if (outdoorStatus !== "RUNNING") return;
             let lat = position.coords.latitude;
             let lon = position.coords.longitude;
             let speedMps = position.coords.speed;
 
             let speedKmh = (speedMps !== null && speedMps > 0) ? speedMps * 3.6 : 0;
+            currentGpsSpeed = speedKmh; // 실시간 전역 변수에 속도 대입
             document.getElementById("gps-speed").innerText = speedKmh.toFixed(1);
+
+            if (outdoorStatus !== "RUNNING") return;
 
             if (lastLat !== null && lastLon !== null) {
                 totalDistance += getDistance(lastLat, lastLon, lat, lon);
@@ -418,7 +466,6 @@
             document.getElementById("outdoor-controls-running").style.display = "none";
             document.getElementById("outdoor-controls-paused").style.display = "flex";
             document.getElementById("gps-speed").innerText = "0.0";
-            speak("주행을 잠시 멈춥니다.");
             releaseWakeLock();
         }
 
@@ -426,7 +473,6 @@
             outdoorStatus = "RUNNING"; lastLat = null; lastLon = null; 
             document.getElementById("outdoor-controls-paused").style.display = "none";
             document.getElementById("outdoor-controls-running").style.display = "flex";
-            speak("주행을 다시 시작합니다.");
             requestWakeLock();
         }
 
@@ -442,14 +488,12 @@
             document.getElementById("outdoor-controls-start").style.display = "flex";
             document.getElementById("gps-speed").innerText = "0.0";
             
-            speak("주행을 완료했습니다.");
-            
             let avgSpeed = totalDistance > 0 ? (totalDistance / (outdoorSeconds / 3600)) : 0;
-            saveRecord("실외 자전거", outdoorSeconds, totalDistance, avgSpeed);
+            saveRecord("실외 자전거", outdoorSeconds, totalDistance, avgSpeed, totalCalories);
             
             if(outdoorSeconds >= 300) {
                 if(confirm("이 운동 기록을 스마트폰 캘린더에 저장하시겠습니까?")) {
-                    addToCalendar("실외 자전거", outdoorSeconds, totalDistance.toFixed(2), avgSpeed.toFixed(1));
+                    addToCalendar("실외 자전거", outdoorSeconds, totalDistance.toFixed(2), avgSpeed.toFixed(1), totalCalories.toFixed(1));
                 }
             }
             navTo('main-screen');
@@ -481,17 +525,17 @@
                 return;
             }
 
-            records.reverse().forEach((r, idx) => {
+            records.reverse().forEach((r) => {
                 let isOut = r.type === "실외 자전거";
                 let cardHtml = `
                     <div class="history-card ${isOut ? 'outdoor' : ''}">
                         <div class="h-date">📅 ${r.date}</div>
                         <div class="h-title">${r.type}</div>
                         <div class="h-desc">
-                            ⏱️ 운동 시간: ${r.time}
+                            ⏱️ 운동 시간: ${r.time}<br>🔥 소비 칼로리: ${r.calories || '0.0'} kcal
                             ${isOut ? `<br>📏 거리: ${r.dist} km<br>⚡ 평균 속도: ${r.speed} km/h` : ''}
                         </div>
-                        <button class="cal-btn" onclick="addToCalendar('${r.type}', ${r.rawSec}, ${r.dist || 0}, ${r.speed || 0})">📅</button>
+                        <button class="cal-btn" onclick="addToCalendar('${r.type}', ${r.rawSec}, ${r.dist || 0}, ${r.speed || 0}, ${r.calories || 0})">📅</button>
                     </div>
                 `;
                 listContainer.innerHTML += cardHtml;
@@ -502,8 +546,8 @@
             let records = JSON.parse(localStorage.getItem('bike_records')) || [];
             if (records.length === 0) return alert("다운로드할 기록이 없습니다.");
 
-            let csvContent = "\uFEFF운동 날짜,운동 종류,운동 시간,이동 거리(km),평균 속도(km/h)\n";
-            records.forEach(r => { csvContent += `${r.date},${r.type},${r.time},${r.dist || '-'},${r.speed || '-'}\n`; });
+            let csvContent = "\uFEFF운동 날짜,운동 종류,운동 시간,소비 칼로리(kcal),이동 거리(km),평균 속도(km/h)\n";
+            records.forEach(r => { csvContent += `${r.date},${r.type},${r.time},${r.calories || '0.0'},${r.dist || '-'},${r.speed || '-'}\n`; });
 
             let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             let link = document.createElement("a");
