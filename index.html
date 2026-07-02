@@ -8,7 +8,7 @@
         body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; text-align: center; height: 100vh; height: 100dvh; background-color: #f8f9fa; display: flex; flex-direction: column; overflow: hidden; }
         
         .screen { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 15px 20px; box-sizing: border-box; width: 100%; overflow-y: auto; }
-        .active-screen { display: flex; }
+        .active-screen { display: flex; } /* 💡 이 부분이 메인 화면을 보여주는 핵심입니다 */
         
         h1, h2 { color: #333; margin-bottom: 15px; margin-top: 0; }
         .btn { border: none; padding: 16px 20px; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; flex-shrink: 0; margin-bottom: 0; touch-action: manipulation; }
@@ -35,19 +35,13 @@
         #countdown-label { font-size: 110px; font-weight: bold; color: #f1c40f; margin: 0; line-height: 1; }
         #cycle-label { font-size: 18px; font-weight: bold; color: #f1c40f; min-height: 30px; margin-top: 5px; margin-bottom: 10px; }
 
-        /* 💡 핵심 수정: 실외 화면 요소를 세밀하게 밀착 및 중앙 정렬 */
+        /* 실외 자전거 (속도계 모드) */
         #outdoor-screen { background-color: #2c3e50; color: white; justify-content: center; padding: 10px 20px; gap: 0px; }
-        
-        /* 현재 시간 크기 유지 및 하단 마진 삭제하여 속도계와 밀착 */
         #current-clock { font-size: 34px; color: #bdc3c7; font-weight: bold; margin-bottom: -5px; letter-spacing: 1px; }
-        
-        /* 속도계 숫자 자체의 줄바꿈 및 line-height 축소 */
         #gps-speed { font-size: 125px; font-weight: bold; color: #f1c40f; line-height: 0.95; margin: 0; padding: 0; }
         
-        /* 💡 수정됨: 통계 표시창 박스 자체를 슬림하게 압축 (margin-bottom 축소) */
         .outdoor-stats { display: flex; flex-wrap: wrap; width: 100%; max-width: 350px; background: rgba(255,255,255,0.1); padding: 6px 5px; border-radius: 12px; flex-shrink: 0; margin-top: 5px; margin-bottom: 12px; box-sizing: border-box; }
         
-        /* 통계 박스 내부 패딩 축소하여 촘촘하게 정렬 */
         .o-stat-box { width: 50%; padding: 6px 2px; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
         .o-stat-box:nth-child(1) { border-bottom: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); }
         .o-stat-box:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -70,7 +64,7 @@
 </head>
 <body>
 
-    <div id="main-screen" class="screen">
+    <div id="main-screen" class="screen active-screen">
         <div style="font-size: 60px; margin-bottom: 10px;">🚴‍♂️</div>
         <h1>자전거 트래커</h1>
         <div class="main-menu-btns">
@@ -163,7 +157,7 @@
     </div>
 
     <script>
-        // --- 실시간 현재 시간 업데이트 로직 ---
+        // --- 실시간 현재 시간 업데이트 ---
         setInterval(() => {
             let now = new Date();
             let hh = String(now.getHours()).padStart(2, '0');
@@ -242,7 +236,7 @@
             alert("캘린더 파일이 다운로드되었습니다!\n스마트폰 알림창에서 열어서 일정을 저장하세요.");
         }
 
-        // --- 기록 저장 로직 ---
+        // --- 기록 저장 ---
         function saveRecord(type, totalSec, distance = 0, avgSpeed = 0, calories = 0) {
             if (totalSec < 10) { 
                 alert("운동 시간이 너무 짧아 기록이 저장되지 않았습니다.");
