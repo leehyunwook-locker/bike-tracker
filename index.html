@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>자전거 트래커</title>
-    <!-- 💡 추가됨: 스마트폰 홈 화면 추가 및 브라우저 탭을 위한 파비콘 (자전거 이모지) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚴‍♂️</text></svg>">
     
     <style>
@@ -36,7 +35,11 @@
         #status-label { font-size: 30px; font-weight: bold; margin-bottom: 5px; }
         #message-label { font-size: 20px; font-weight: bold; min-height: 40px; line-height: 1.3; margin-bottom: 5px; }
         #countdown-label { font-size: 110px; font-weight: bold; color: #f1c40f; margin: 0; line-height: 1; }
-        #cycle-label { font-size: 18px; font-weight: bold; color: #f1c40f; min-height: 30px; margin-top: 5px; margin-bottom: 10px; }
+        #cycle-label { font-size: 18px; font-weight: bold; color: #f1c40f; min-height: 30px; margin-top: 5px; margin-bottom: 5px; }
+        
+        /* 💡 추가됨: 실내 자전거 칼로리 표시 디자인 */
+        #indoor-cal-display { font-size: 16px; color: #bdc3c7; margin-bottom: 15px; font-weight: bold; }
+        #indoor-calories { font-size: 26px; color: white; letter-spacing: -0.5px; }
 
         /* 실외 자전거 (속도계 모드) */
         #outdoor-screen { background-color: #2c3e50; color: white; justify-content: center; padding: 10px 20px; gap: 0px; }
@@ -44,12 +47,10 @@
         #gps-speed { font-size: 125px; font-weight: bold; color: #f1c40f; line-height: 0.95; margin: 0; padding: 0; }
         
         .outdoor-stats { display: flex; flex-wrap: wrap; width: 100%; max-width: 350px; background: rgba(255,255,255,0.1); padding: 6px 5px; border-radius: 12px; flex-shrink: 0; margin-top: 5px; margin-bottom: 12px; box-sizing: border-box; }
-        
         .o-stat-box { width: 50%; padding: 6px 2px; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
         .o-stat-box:nth-child(1) { border-bottom: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); }
         .o-stat-box:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.1); }
         .o-stat-box:nth-child(3) { border-right: 1px solid rgba(255,255,255,0.1); }
-        
         .o-stat-title { font-size: 15px; color: #bdc3c7; margin-bottom: 2px; }
         .o-stat-val { font-size: 26px; font-weight: bold; color: white; letter-spacing: -0.5px; }
         .o-stat-unit { font-size: 14px; font-weight: normal; margin-left: 2px; }
@@ -83,11 +84,11 @@
         <h1>🚲 실내 인터벌 설정</h1>
         <div class="input-group">
             <label>총 운동 시간 (분):</label>
-            <input type="number" id="total-min" value="10">
+            <input type="number" id="total-min" value="25">
         </div>
         <div class="input-group">
             <label>전력질주 (초):</label>
-            <input type="number" id="sprint-sec" value="30">
+            <input type="number" id="sprint-sec" value="25">
         </div>
         <div class="input-group">
             <label>휴식 시간 (초):</label>
@@ -105,6 +106,10 @@
         <div id="message-label"></div>
         <div id="countdown-label"></div>
         <div id="cycle-label"></div>
+        
+        <!-- 💡 추가됨: 실내 자전거 실시간 칼로리 표시창 -->
+        <div id="indoor-cal-display">소비 칼로리: <span id="indoor-calories">0.0</span> kcal</div>
+        
         <div class="control-row" id="indoor-controls">
             <button class="btn btn-red" ontouchend="stopIndoorWorkout(); event.preventDefault();" onclick="stopIndoorWorkout()">운동 강제 종료</button>
         </div>
@@ -116,14 +121,9 @@
 
     <!-- 실외 자전거 (속도계 모드) -->
     <div id="outdoor-screen" class="screen">
-        
-        <!-- 실시간 현재 시간 표시 -->
         <div id="current-clock">00:00:00</div>
-        
-        <!-- 대형 속도계 숫자 (단위 문구 삭제됨) -->
         <div id="gps-speed">0.0</div>
         
-        <!-- 칼로리 포함 2x2 통계 박스 -->
         <div class="outdoor-stats">
             <div class="o-stat-box">
                 <div class="o-stat-title">운동 거리</div>
@@ -143,7 +143,6 @@
             </div>
         </div>
         
-        <!-- 컨트롤 버튼들 -->
         <div class="control-row" id="outdoor-controls-start">
             <button class="btn btn-green" ontouchend="startOutdoorWorkout(); event.preventDefault();" onclick="startOutdoorWorkout()">주행 시작</button>
             <button class="btn btn-white" ontouchend="navTo('main-screen'); event.preventDefault();" onclick="navTo('main-screen')">메인으로</button>
@@ -169,7 +168,7 @@
     </div>
 
     <script>
-        // --- 실시간 현재 시간 업데이트 로직 ---
+        // --- 실시간 현재 시간 업데이트 ---
         setInterval(() => {
             let now = new Date();
             let hh = String(now.getHours()).padStart(2, '0');
@@ -248,7 +247,7 @@
             alert("캘린더 파일이 다운로드되었습니다!\n스마트폰 알림창에서 열어서 일정을 저장하세요.");
         }
 
-        // --- 기록 저장 로직 ---
+        // --- 기록 저장 ---
         function saveRecord(type, totalSec, distance = 0, avgSpeed = 0, calories = 0) {
             if (totalSec < 10) { 
                 alert("운동 시간이 너무 짧아 기록이 저장되지 않았습니다.");
@@ -262,17 +261,18 @@
             let newRecord = { 
                 date: dateStr, type: type, time: timeStr, 
                 dist: distance.toFixed(2), speed: avgSpeed.toFixed(1),
-                calories: calories.toFixed(1), rawSec: totalSec 
+                calories: Number(calories).toFixed(1), rawSec: totalSec 
             };
             records.push(newRecord);
             localStorage.setItem('bike_records', JSON.stringify(records));
         }
 
         // ==========================================
-        // 실내 자전거 로직
+        // 실내 자전거 (정밀 칼로리 로직 추가)
         // ==========================================
         let indoorTimerInterval;
         let cyclesLeft, phase, currentTime, sprintSec, restSec, totalCycles, indoorTotalElapsedSec = 0;
+        let indoorTotalCalories = 0; // 💡 실내 전용 실시간 칼로리 변수
 
         function setScreenProps(bgColor, statusTxt, countdownColor) {
             document.getElementById("timer-screen").style.backgroundColor = bgColor;
@@ -294,6 +294,8 @@
             totalCycles = Math.floor((totalMin * 60) / cycleSec);
             cyclesLeft = totalCycles;
             indoorTotalElapsedSec = 0;
+            indoorTotalCalories = 0; // 시작 시 칼로리 초기화
+            
             if (cyclesLeft <= 0) { alert("운동 시간이 너무 짧습니다."); return; }
 
             requestWakeLock();
@@ -302,6 +304,8 @@
             document.getElementById("indoor-controls").style.display = "flex";
             document.getElementById("indoor-finish-controls").style.display = "none";
             document.getElementById("cycle-label").style.display = "block";
+            document.getElementById("indoor-cal-display").style.display = "block";
+            document.getElementById("indoor-calories").innerText = "0.0";
             
             phase = "READY"; currentTime = 5;
             setScreenProps("#34495e", "⏳ GET READY ⏳", "#f1c40f");
@@ -314,7 +318,14 @@
 
         function updateIndoorTimer() {
             currentTime--;
-            if (phase !== "READY") indoorTotalElapsedSec++;
+            if (phase !== "READY") {
+                indoorTotalElapsedSec++;
+                
+                // 💡 실시간 강도(MET) 분리 계산 로직 (질주=12.0, 휴식=4.0)
+                let currentMet = (phase === "SPRINT") ? 12.0 : 4.0;
+                indoorTotalCalories += (currentMet * 3.5 * 70 / 200) / 60; // 1초당 칼로리 누적
+                document.getElementById("indoor-calories").innerText = indoorTotalCalories.toFixed(1);
+            }
             document.getElementById("countdown-label").innerText = currentTime;
 
             if (phase === "READY" && currentTime === 3) speak("3, 2, 1, 시작!");
@@ -347,8 +358,7 @@
         function stopIndoorWorkout() {
             clearInterval(indoorTimerInterval);
             releaseWakeLock();
-            let inCal = (6.5 * 3.5 * 70 / 200) / 60 * indoorTotalElapsedSec;
-            saveRecord("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal);
+            saveRecord("실내 자전거", indoorTotalElapsedSec, 0, 0, indoorTotalCalories);
             navTo('main-screen');
         }
 
@@ -356,7 +366,6 @@
             clearInterval(indoorTimerInterval);
             releaseWakeLock();
             
-            let inCal = (6.5 * 3.5 * 70 / 200) / 60 * indoorTotalElapsedSec;
             setScreenProps("#3498db", "🎉 WORKOUT DONE 🎉", "white");
             document.getElementById("message-label").innerHTML = "수고하셨습니다!";
             document.getElementById("countdown-label").innerText = "🏆";
@@ -365,15 +374,15 @@
             document.getElementById("indoor-controls").style.display = "none";
             document.getElementById("indoor-finish-controls").style.display = "flex";
             
-            document.getElementById("indoor-cal-btn").onclick = function() { addToCalendar("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal.toFixed(1)); };
-            document.getElementById("indoor-cal-btn").ontouchend = function(e) { e.preventDefault(); addToCalendar("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal.toFixed(1)); };
+            document.getElementById("indoor-cal-btn").onclick = function() { addToCalendar("실내 자전거", indoorTotalElapsedSec, 0, 0, indoorTotalCalories.toFixed(1)); };
+            document.getElementById("indoor-cal-btn").ontouchend = function(e) { e.preventDefault(); addToCalendar("실내 자전거", indoorTotalElapsedSec, 0, 0, indoorTotalCalories.toFixed(1)); };
             
             speak("운동 완료! 고생하셨습니다.");
-            saveRecord("실내 자전거", indoorTotalElapsedSec, 0, 0, inCal);
+            saveRecord("실내 자전거", indoorTotalElapsedSec, 0, 0, indoorTotalCalories);
         }
 
         // ==========================================
-        // 실외 자전거 (GPS & 스마트 오토 로직)
+        // 실외 자전거
         // ==========================================
         let watchId = null, outdoorTimerInterval = null;
         let outdoorSeconds = 0, totalDistance = 0, outdoorStatus = "STOPPED";
